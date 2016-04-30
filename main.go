@@ -1,6 +1,8 @@
 package onion
 
-import ()
+import (
+	"fmt"
+)
 
 type Onion struct{}
 
@@ -23,11 +25,13 @@ func (f ClientFunc) Do(a int) (int, error) {
 // A Decorator wraps a Client with extra behaviour.
 type Decorator func(Client) Client
 
-// Add returns a Decorator that increases Client's input.
+// Add returns a Decorator that increases Client's int.
 func Add(n int) Decorator {
 	return func(c Client) Client {
 		return ClientFunc(func(a int) (int, error) {
-			return c.Do(a + n)
+			a += n
+			fmt.Printf("Add %v %v\n", n, a)
+			return c.Do(a)
 		})
 	}
 }
@@ -36,7 +40,9 @@ func Add(n int) Decorator {
 func Mul(m int) Decorator {
 	return func(c Client) Client {
 		return ClientFunc(func(a int) (int, error) {
-			return c.Do(a * m)
+			a *= m
+			fmt.Printf("Mul %v %v\n", m, a)
+			return c.Do(a)
 		})
 	}
 }
